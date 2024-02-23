@@ -1,0 +1,63 @@
+{% extends 'layout.njk' %}
+
+{% block content %}
+
+{% if dateCreated %}
+  <p class="page-created-date">Page Data last updated: {{ dateCreated }}</p>
+{% endif %}
+
+<div class="input-field">
+  <input type="text" id="search" placeholder="Search for a user or game" />
+</div>
+
+<style>
+    .item-content {
+        display: none;
+    }
+    .open-btn {
+        cursor: pointer;
+        color: #039be5;
+    }
+</style>
+
+<ol id="want-to-play-list">
+  {% for item in data %}
+  <li>
+    <div><strong><a target="_blank" href="https://boardgamegeek.com/boardgame/{{ item.id}}/gamename">{{ item.full_name }}</a></strong>: <span class="open-btn" onclick="toggleContent(this)">{{ item._count.collectionItems }}<span></div>
+    <div class="item-content">
+      {% for innerItem in item['collectionItems'] %}
+        <a target="_blank" href="https://boardgamegeek.com/collection/user/{{ innerItem['username'] }}">{{ innerItem['username'] }}</a><span> </span>
+      {% endfor %}
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+
+<script>
+function toggleContent(button) {
+    var buttonParent = button.parentNode.parentNode;
+    var contentDiv = buttonParent.querySelector('.item-content');
+    contentDiv.style.display = (contentDiv.style.display === 'none' || contentDiv.style.display === '') ? 'block' : 'none';
+}
+
+function displayItemsWithText(id, text) {
+  var myList = document.getElementById(id);
+  var items = myList.querySelectorAll('li');
+  text = text.toLowerCase();
+  items.forEach(function(item) {
+    itemText = item.textContent.toLowerCase();
+    if (itemText.includes(text) || text === '') {
+      item.style.display = 'list-item';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+const searchString = '';
+document.getElementById('search').addEventListener('keyup', function(e) {
+  var searchString = e.target.value;
+  displayItemsWithText('want-to-play-list', searchString);
+});
+</script>
+
+{% endblock %}

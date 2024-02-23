@@ -1,0 +1,12 @@
+node_modules
+# Keep environment variables out of version control
+.env
+*.db
+*.db-journal
+.dist
+dist
+*.log
+
+# ignore tmp folder but keep placeholder.txt
+tmp/*
+!tmp/.placeholder

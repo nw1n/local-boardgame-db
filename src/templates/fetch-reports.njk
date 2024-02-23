@@ -1,0 +1,22 @@
+{% extends 'layout.njk' %}
+
+{% block content %}
+
+<div>
+  {% for item in data %}
+    <div>
+      <h5>{{ item.date_created }}</h5>
+      <div>percent_of_prev: {{ item.percent_of_prev}}</div>
+      <div>num_items: {{ item.num_items}}</div>
+      <div>num_users: {{ item.num_users}}</div>
+      <div>no_collection_users: {{ item.no_collection_users}}</div>
+      <div>
+        {{ item | dump }}
+      </div>
+      <hr>
+      <br>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

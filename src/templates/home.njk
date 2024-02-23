@@ -1,0 +1,29 @@
+{% extends 'layout.njk' %}
+{% block content %}
+<style>
+  .jump-to-bottom-link {
+    display: none;
+  }
+  .main-text-container {
+    max-width: 720px;
+  }
+</style>
+<div class="main-text-container">
+<p><strong>Welcome to {{layoutData.city}} Boardgame DB</strong></p>
+<p>This website is a personal hobby project for board game enthusiasts in the {{layoutData.city}} region.
+This site curates data of boardgamegeek.com users that have set {{layoutData.city}} as their location in their BGG profile</a>.
+</p>
+<p>
+Features:
+</p>
+<ul class="browser-default">
+  <li><a href="/marketplace">Marketplace</a>: Find local games up for grabs.</li>
+  <li><a href="/want-to-play">Want to Play</a>: Find gamers that are interested in the same game.</li>
+  <li><a href="/ratings">Ratings</a>: See local preferences.</li>
+  <li><a href="/own">Owned Games</a>: See what games are in local collections.</li>
+</ul>
+<p>
+Enjoy!
+</p>
+</div>
+{% endblock %}

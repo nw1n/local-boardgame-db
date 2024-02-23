@@ -1,0 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// use sqlite
+datasource db {
+  provider = "sqlite"
+  url      = "file:./database.db"
+}
+
+model PageCache {
+  id           Int      @id @default(autoincrement())
+  url          String   @unique
+  content      String
+  date_created DateTime @default(now())
+  date_changed DateTime @default(now())
+}
+
+model BggUserListItem {
+  username     String   @unique
+  country      String   @default("")
+  city         String   @default("")
+  date_added   DateTime @default(now())
+  date_changed DateTime @default(now())
+
+  @@id([username])
+}
+
+model User {
+  username                String
+  country                 String           @default("")
+  city                    String           @default("")
+  has_collection          Boolean?
+  date_created            DateTime         @default(now())
+  date_collection_fetched DateTime?
+  collectionItems         CollectionItem[]
+
+  @@id([username])
+}
+
+model Game {
+  id              Int              @id
+  full_name       String           @default("")
+  rank            Int              @default(0)
+  owners_amount   Int              @default(0)
+  date_created    DateTime         @default(now())
+  date_changed    DateTime         @default(now())
+  avg_rating      Float            @default(0)
+  collectionItems CollectionItem[]
+}
+
+// model CollectionItem has as key the combination of id and username
+model CollectionItem {
+  id            Int
+  game          Game     @relation(fields: [id], references: [id])
+  username      String
+  user          User     @relation(fields: [username], references: [username])
+  date_added    DateTime @default(now())
+  date_changed  DateTime @default(now())
+  rating        Float    @default(0)
+  own           Boolean  @default(false)
+  prev_owned    Boolean  @default(false)
+  for_trade     Boolean  @default(false)
+  want          Boolean  @default(false)
+  want_to_play  Boolean  @default(false)
+  want_to_buy   Boolean  @default(false)
+  wishlist      Boolean  @default(false)
+  for_sale      Boolean  @default(false)
+  last_modified DateTime @default(now())
+  num_plays     Int      @default(0)
+
+  @@id([id, username])
+}
+
+model TmpUser {
+  username                String
+  country                 String              @default("")
+  city                    String              @default("")
+  has_collection          Boolean?
+  date_created            DateTime            @default(now())
+  date_collection_fetched DateTime?
+  collectionItems         TmpCollectionItem[]
+
+  @@id([username])
+}
+
+model TmpGame {
+  id              Int                 @id
+  full_name       String              @default("")
+  rank            Int                 @default(0)
+  owners_amount   Int                 @default(0)
+  date_created    DateTime            @default(now())
+  date_changed    DateTime            @default(now())
+  avg_rating      Float               @default(0)
+  collectionItems TmpCollectionItem[]
+}
+
+// model CollectionItem has as key the combination of id and username
+model TmpCollectionItem {
+  id            Int
+  game          TmpGame  @relation(fields: [id], references: [id])
+  username      String
+  user          TmpUser  @relation(fields: [username], references: [username])
+  date_added    DateTime @default(now())
+  date_changed  DateTime @default(now())
+  rating        Float    @default(0)
+  own           Boolean  @default(false)
+  prev_owned    Boolean  @default(false)
+  for_trade     Boolean  @default(false)
+  want          Boolean  @default(false)
+  want_to_play  Boolean  @default(false)
+  want_to_buy   Boolean  @default(false)
+  wishlist      Boolean  @default(false)
+  for_sale      Boolean  @default(false)
+  last_modified DateTime @default(now())
+  num_plays     Int      @default(0)
+
+  @@id([id, username])
+}
+
+model FetchReport {
+  id                      Int      @id @default(autoincrement())
+  date_created            DateTime @default(now())
+  status                  String
+  message                 String
+  percent_of_prev         Int
+  num_items               Int
+  num_users               Int
+  no_collection_users     String
+  num_no_collection_users Int
+  num_games               Int
+  num_errors              Int
+}
+
+model BlackListedUserName {
+  username     String   @id
+  date_created DateTime @default(now())
+}

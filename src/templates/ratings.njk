@@ -1,0 +1,169 @@
+{% extends 'layout.njk' %}
+
+{% block content %}
+
+<style>
+  .table-container {
+      max-width: 100vw;
+      overflow-x: auto;
+  }
+  .table-container td,
+  .table-container th {
+      vertical-align: top;
+  }
+  .rating-users-list {
+    margin-top: 14px;
+    display: none;
+  }
+  th.sortable {
+    cursor: pointer;
+  }
+  th.sortable:after {
+    content: ' ▾';
+  }
+  thead th {
+    vertical-align: top;
+  }
+  .btn-container {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .plus-signed:before {
+    content: '+';
+  }
+</style>
+
+{% if dateCreated %}
+  <p class="page-created-date">Page Data last updated: {{ dateCreated }}</p>
+{% endif %}
+
+<div>
+  <label for="minRatingInput">Minimum Votes Filter</label>
+  <input type="number" id="minRatingInput" oninput="filterTable()" value="5">
+</div>
+
+
+<div class="table-container">
+  <table id="myTable">
+      <thead>
+          <tr>
+              <th>#</th>
+              <th class="sortable" onclick="sortTable(1)">Name</th>
+              <th class="sortable" onclick="sortTable(2)">Avg. Rating</th>
+              <th class="sortable" onclick="sortTable(3)">BGG Diff</th>
+              <th class="sortable" onclick="sortTable(4)">Votes</th>
+              <th>Users</th>
+          </tr>
+      </thead>
+      <tbody id="city-rating-list"">
+        {% for item in data %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td><a target="_blank" href="https://boardgamegeek.com/boardgame/{{ item.id}}/game">{{ item.full_name }}</a></td>
+            <td>{{ item.local_avg_rating }}</td>
+            <td class="{% if item.rating_diff >= 0 %}plus-signed{% endif %}">{{ (item.rating_diff | float).toFixed(1) }}</td>
+            <td>{{ item._count.collectionItems }}</td>
+            <td>
+              <div class="btn-container clearfix">
+                <button class="showRatingUserListBtn waves-effect waves-light btn">+</button>
+              </div>
+              <div class="rating-users-list">
+                {% for user in item.collectionItems %}
+                  <div>
+                    <a target="_blank" href="https://boardgamegeek.com/collection/user/{{ user.username }}">{{ user.username }}</a>:&nbsp;{{ user.rating }}
+                  </div>
+                {% endfor %}
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+          <!-- Add more rows as needed -->
+      </tbody>
+  </table>
+</div>
+
+<script>
+  initButtons();
+  filterTable();
+
+  function updateTableIndices() {
+    const table = document.getElementById('myTable');
+    const tbody = table.querySelector('tbody');
+    const rows = tbody.querySelectorAll('tr');
+
+    let i = 1;
+    rows.forEach((row, index) => {
+      if (row.style.display === 'none') {
+        return;
+      }
+      row.children[0].textContent = i;
+      i++;
+    });
+  }
+
+  function sortTable(columnIndex) {
+      const table = document.getElementById('myTable');
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+
+      rows.sort((a, b) => {
+          const aValue = a.children[columnIndex].textContent.trim();
+          const bValue = b.children[columnIndex].textContent.trim();
+          return isNaN(aValue) ? aValue.localeCompare(bValue) : bValue - aValue;
+      });
+
+      while (tbody.firstChild) {
+          tbody.removeChild(tbody.firstChild);
+      }
+
+      rows.forEach(row => {
+          tbody.appendChild(row);
+      });
+      
+      updateTableIndices();
+  }
+
+  function filterTable() {
+      const minRatingInput = document.getElementById('minRatingInput');
+      const minRating = parseFloat(minRatingInput.value);
+
+      const table = document.getElementById('myTable');
+      const tbody = table.querySelector('tbody');
+      const rows = tbody.querySelectorAll('tr');
+
+      rows.forEach(row => {
+          const ratingCell = row.children[4];
+          const ratingValue = parseFloat(ratingCell.textContent);
+
+          if (isNaN(minRating) || ratingValue >= minRating) {
+              row.style.display = '';
+          } else {
+              row.style.display = 'none';
+          }
+      });
+      updateTableIndices();
+  }
+
+  function initButtons(buttons) {
+    buttons = document.querySelectorAll('.showRatingUserListBtn');
+    // Iterate over each button and add an event listener
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          // Find the parent list item of the clicked button
+          var listItem = button.closest('tr');
+
+          // Find the 'rating-users-list' within the parent list item
+          var ratingUsersList = listItem.querySelector('.rating-users-list');
+
+          // Find the 'showRatingUserListBtn' within the parent list item
+          var showRatingUserListBtn = listItem.querySelector('.showRatingUserListBtn');
+
+          // Toggle the display of the 'rating-users-list'
+          ratingUsersList.style.display = (ratingUsersList.style.display === 'none' || ratingUsersList.style.display === '') ? 'block' : 'none';
+          // showRatingUserListBtn.style.display = 'none';
+        });
+      });
+  }
+</script>
+
+{% endblock %}

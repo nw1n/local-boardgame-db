@@ -1,0 +1,138 @@
+{% extends 'layout.njk' %}
+
+{% block content %}
+
+<div class="input-field">
+  <input type="text" id="search" placeholder="Search for a user or game" />
+</div>
+
+<div>
+  <br/>
+  ( Possible trades available for:
+  {% for username in data.usernamesListForPossibleTrades %}
+    <a target="_blank" href="https://boardgamegeek.com/collection/user/{{ username }}">{{ username }}</a>
+  {% endfor %}
+  )
+</div>
+<button id="show-possible-trades-btn" class="waves-effect waves-light btn" style="margin-top: 6px;">Show possible Trades</button>
+
+<div id="trades-section" style="display: none;">
+  <h2>Possible Trades</h2>
+  <ol id="trades-list">
+    {% for topUsername, value in data.trades %}
+      {% for bottomUsername, bValue in data.trades[topUsername] %}
+        <li>
+          <div>
+            <a target="_blank" href="https://boardgamegeek.com/collection/user/{{ topUsername }}">{{ topUsername }}</a>
+            <span>could trade with</span>
+            <a target="_blank" href="https://boardgamegeek.com/collection/user/{{ bottomUsername }}">{{ bottomUsername }}</a>
+          </div>
+          {% set topUserNameGivesKey = topUsername ~ '-gives' %}
+          {% set bottomUserNameGivesKey = bottomUsername ~ '-gives' %}
+          <div>
+            <div>
+              {{ topUsername }} has:
+              {% for item in data.trades[topUsername][bottomUsername][topUsername ~ '-gives'] %}
+                <span><a target="_blank" href="https://boardgamegeek.com/boardgame/{{ item.id}}/gamename">{{ item.full_name }}</a></span> <span>&nbsp;</span>
+              {% endfor %}
+            </div>
+          </div>
+          <div>
+            <div>
+              {{ bottomUsername }} has:
+              {% for item in data.trades[topUsername][bottomUsername][bottomUsername ~ '-gives'] %}
+                <span><a target="_blank" href="https://boardgamegeek.com/boardgame/{{ item.id}}/gamename">{{ item.full_name }}</a></span> <span>&nbsp;</span>
+              {% endfor %}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    {% endfor %}
+  </ol>
+</div>
+
+<h2>Matches</h2>
+
+<ol id="matches-list">
+  {% for item in data.matches %}
+  <li>
+    <div><strong><a target="_blank" href="https://boardgamegeek.com/boardgame/{{ item.supply.id}}/gamename">{{ item.supply.full_name }}</a></strong>: {{ item.supply._count.collectionItems }}</div>
+    <div>
+      Supply<br/>
+      {% for innerItem in item.supply.collectionItems %}
+        <a target="_blank" href="https://boardgamegeek.com/collection/user/{{ innerItem.username }}">{{ innerItem.username }}</a><span> </span>
+      {% endfor %}
+      <br/>
+      Demand<br/>
+      {% for innerItem in item.demand.collectionItems %}
+        <a target="_blank" href="https://boardgamegeek.com/collection/user/{{ innerItem.username }}">{{ innerItem.username }}</a><span> </span>
+      {% endfor %}
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+
+<h2>Supply</h2>
+<ol id="supply-list">
+  {% for item in data.supply %}
+  <li>
+    <div><strong><a target="_blank" href="https://boardgamegeek.com/boardgame/{{ item.id}}/gamename">{{ item.full_name }}</a></strong>: {{ item._count.collectionItems }}</div>
+    <div>
+      {% for innerItem in item.collectionItems %}
+        <a target="_blank" href="https://boardgamegeek.com/collection/user/{{ innerItem.username }}">{{ innerItem.username }}</a><span> </span>
+      {% endfor %}
+    </div>
+  </li>
+  {% endfor %}
+</ol>
+
+<h2>Demand</h2>
+<ol id="demand-list">
+{% for item in data.demand %}
+<li>
+  <div><strong><a target="_blank" href="https://boardgamegeek.com/boardgame/{{ item.id}}/gamename">{{ item.full_name }}</a></strong>: {{ item._count.collectionItems }}</div>
+  <div>
+    {% for innerItem in item.collectionItems %}
+      <a target="_blank" href="https://boardgamegeek.com/collection/user/{{ innerItem.username }}">{{ innerItem.username }}</a><span> </span>
+    {% endfor %}
+  </div>
+</li>
+{% endfor %}
+</ol>
+
+<script>
+function displayItemsWithText(id, text) {
+  var myList = document.getElementById(id);
+  var items = myList.querySelectorAll('li');
+  text = text.toLowerCase();
+  items.forEach(function(item) {
+    itemText = item.textContent.toLowerCase();
+    if (itemText.includes(text) || text === '') {
+      item.style.display = 'list-item';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
+
+document.getElementById('show-possible-trades-btn').addEventListener('click', function(e) {
+  var possibleTradesSection = document.getElementById('trades-section');
+  if (possibleTradesSection.style.display === 'none') {
+    possibleTradesSection.style.display = 'block';
+  } else {
+    possibleTradesSection.style.display = 'none';
+  }
+});
+
+const searchString = '';
+document.getElementById('search').addEventListener('keyup', function(e) {
+  var searchString = e.target.value;
+  displayItemsWithText('matches-list', searchString);
+  displayItemsWithText('supply-list', searchString);
+  displayItemsWithText('demand-list', searchString);
+  displayItemsWithText('trades-list', searchString);
+});
+</script>
+
+{% endblock %}

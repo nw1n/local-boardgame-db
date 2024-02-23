@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{layoutData.city}} Boardgame DB - {{ title }}</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAiVJREFUOE9dU0trE2EUPV9m0hhNom7ERaluMrW/oxtB+i/apCQQxSJYwS60PujGjYKbCiL+gYKIZutCsLhQcaFdKiiaqTOmyTTJfFfuvfOInc0wd+7jnHvONX5njQCCPiZ5py+SkJHfBsR5xkg6Z3LY+J2rWs0RtwiUj0uFIU2heAJzMMxGcMxIM60xjCCd63h1VFtNcCBJkXQKQxy+eYuo24WxjENm69ycgkHR81BpNQCyiH/8lEkoH0Ph9EnBO3z1GtHLroJnKlkDJkncoI4TjGAwQHhjI1tLaXER5aWLsH6A4NamxoUDwex31iiF5Hp1VNpN2OkGRHAXLqC6ugwaRvhz/aYWJiRzCsbA9TxUWw1QFCF88FBSTLWC8tIluOfmMPrwEQfbT3OleFeKQHciCFpNgHRCriyrYRHe3YLt9Y7KmKhggEyF2GLydU+hukU45+cA18V49z0Gz54nkiZL3L+sRiJKKLRXYAdDhOsbmfaF2VnUrl2BIUJw+x5sz1cP/Gck9hHL2FYVAlZhynGntu4ApRL6jx4j/rInXmCauoNERneejdQQBMF6IiOA4sI8KqsrspJw8z7iX7/V0TxgWkb2ASOAtZh8+y4JhZkZOGfPyJbHnz6jv/0k94BamW9BF6IUGsmX2lU8Eo0QvdvF4c4L0Hgkx5WdX9aAezgunFotM5qUxzHs3z5AsbhVzzC9BYLxWYW03ZFjznwgGNO01CG6xn8HMRIFLJCYNgAAAABJRU5ErkJggg==" type="image/x-icon">
+    <style>
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+      main {
+        flex: 1 0 auto;
+        padding-bottom: 40px;
+      }
+      body:not(.is-admin) .is-admin-nav-item {
+        display: none;
+      }
+      .contact-email-link:hover {
+        text-decoration: none;
+      }
+      .footer-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .page-footer {
+        padding-top: 30px;
+        padding-bottom: 36px;
+        line-height: 1;
+      }
+      .page-created-date {
+        font-size: 0.8em;
+        color: #999;
+      }
+      nav .brand-logo {
+        padding-left: 6px;
+        padding-right: 6px;
+        text-align: center;
+      }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const elems = document.querySelectorAll('.sidenav');
+          options = {};
+          const instances = M.Sidenav.init(elems, options);
+        });
+    </script>
+  </head>
+
+  <body class="">
+    <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper">
+          <a href="/" class="brand-logo">|B|</a>
+          <a href="/" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="/">Home</a></li>
+            <li><a href="/ratings">Ratings</a></li>
+            <li><a href="/marketplace">Marketplace</a></li>
+            <li><a href="/want-to-play">Want to play</a></li>
+            <li><a href="/own">Owned Games</a></li> 
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <ul class="sidenav" id="mobile-demo">
+      <li><a href="/">Home</a></li>
+      <li><a href="/ratings">Ratings</a></li>
+      <li><a href="/marketplace">Marketplace</a></li>
+      <li><a href="/want-to-play">Want to play</a></li>
+      <li><a href="/own">Owned Games</a></li> 
+    </ul>
+    <main>
+      <div class="container">
+        <header>
+          <h1 id="h1-title">{{ title }}</h1>
+        </header>
+        <div>
+          <p><a href="#end-of-page" class="grey-text jump-to-bottom-link">&gt; Jump to Bottom </a></p>
+        </div>
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+    <footer class="page-footer" id="end-of-page">
+      <div class="container">
+        <div class="footer-line">
+          <div>
+            <a class="white-text" href="#h1-title">&gt; Jump to Top</a>
+          </div>
+        </div>
+        {% if layoutData.dateLastFetched %}
+          <br/>
+          <div>
+            <span class="white-text">Data last updated: {{ layoutData.dateLastFetched }}</span>
+          </div>
+        {% endif %}
+      </div>
+    </footer>
+  </body>
+</html>
