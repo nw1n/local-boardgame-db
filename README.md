@@ -18,7 +18,7 @@ Step 2: Init Sqlite Database:
 npm run prisma-migrate
 ```
 
-Step 3: Start scraping Data (this can take hours, depending on the location you are scraping)
+Step 3: Start scraping Data (this can take hours, depending on the location you are scraping). On first time use this command needs to be successfully executed twice, after that a single execution of the command is enough to scrape the data again.
 
 ```bash
 npm run scrape-full
